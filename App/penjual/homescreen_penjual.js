@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 export default function App({ navigation }) {
   return (
@@ -9,10 +9,6 @@ export default function App({ navigation }) {
         <TouchableOpacity style={styles.logoutButton}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Cari..."
-        />
       </View>
       <Text>homescreen penjual</Text>
       <StatusBar style="auto" />
