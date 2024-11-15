@@ -1,100 +1,96 @@
-// login.js
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { View, TextInput, Button, Text, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebaseConfig';
+import AuthHeader from './AuthHeader';
+
+const validateLoginInput = (email, password) => {
+  if (email.trim() === '' || password.trim() === '') {
+    return 'Email dan password tidak boleh kosong.';
+  }
+  return '';
+};
+
+const handleFirebaseLogin = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigation = useNavigation();
 
-  const handleLogin = (userType) => {
-    if (email.trim() === '' || password === '') {
-      Alert.alert('Error', 'Email dan password tidak boleh kosong.');
+  const handleLogin = async (userType) => {
+    // Validasi input : fungsi murni
+    const validationError = validateLoginInput(email, password);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     setLoading(true);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        setLoading(false);
-        const userEmail = userCredential.user.email;
+    setError('');
 
-        // Penyesuaian: Hanya memeriksa tipe user tanpa email hardcoded
-        if (userType === 'penjual') {
-          navigation.navigate('HomeScreen penjual');
-        } else if (userType === 'pembeli') {
-          navigation.navigate('HomeScreen pembeli');
-        } else {
-          Alert.alert('Login Gagal', 'Jenis akun tidak sesuai dengan yang dipilih.');
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log("Error Code:", error.code);
-        console.log("Error Message:", error.message);
-        Alert.alert('Login Gagal', 'Email atau password salah');
-      });
+    try {
+      await handleFirebaseLogin(email, password);
+
+      if (userType === 'penjual') {
+        navigation.navigate('HomeScreen penjual');
+      } else if (userType === 'pembeli') {
+        navigation.navigate('HomeScreen pembeli');
+      } else {
+        Alert.alert('Login Gagal', 'Jenis akun tidak sesuai dengan yang dipilih.');
+      }
+    } catch (error) {
+      setError('Email atau password salah');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Masuk sebagai</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+    <View style={{ flex: 1 }}>
+      <AuthHeader 
+        onLoginPress={() => navigation.navigate('Login')} 
+        onRegisterPress={() => navigation.navigate('Signup')}
+        isOnSignupScreen={false}
       />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <>
-          <Button title="Login sebagai Penjual" onPress={() => handleLogin('penjual')} />
-          
-          <View style={{ height: 10 }} />
-
-          <Button title="Login sebagai Pembeli" onPress={() => handleLogin('pembeli')} />
-        </>
-      )}
+      <View style={{ padding: 20 }}>
+        <Text>Email</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Enter your email"
+          keyboardType="email-address"
+          style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
+        />
+        <Text>Password</Text>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Enter your password"
+          secureTextEntry
+          style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
+        />
+        {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <>
+            <Button title="Login sebagai Penjual" onPress={() => handleLogin('penjual')} />
+            <View style={{ height: 10 }} />
+            <Button title="Login sebagai Pembeli" onPress={() => handleLogin('pembeli')} />
+          </>
+        )}
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-  },
-  text: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-});
