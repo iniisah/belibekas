@@ -63,7 +63,13 @@ export default function LoginScreen() {
         onRegisterPress={() => navigation.navigate('Signup')}
         isOnSignupScreen={false}
       />
-      <View style={{ padding: 20 }}>
+      <View style={{ marginTop: 30, padding: 20 }}>
+        <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'left', marginBottom: 0, color: '#293C8F' }}>
+          BELI
+        </Text>
+        <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, color: '#293C8F'  }}>
+          BEKAS
+        </Text>
         <Text>Email</Text>
         <TextInput
           value={email}
@@ -85,9 +91,9 @@ export default function LoginScreen() {
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            <Button title="Login sebagai Penjual" onPress={() => handleLogin('penjual')} />
+            <Button title="Login sebagai Penjual" onPress={() => handleLogin('penjual')} color='#293C8F' />
             <View style={{ height: 10 }} />
-            <Button title="Login sebagai Pembeli" onPress={() => handleLogin('pembeli')} />
+            <Button title="Login sebagai Pembeli" onPress={() => handleLogin('pembeli')} color='#293C8F' />
           </>
         )}
       </View>

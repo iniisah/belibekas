@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     active: {
-        backgroundColor: '#4169E1', // Active button color
+        backgroundColor: '#293C8F', // Active button color
     },
     inactive: {
         backgroundColor: '#2C3E50', // Inactive button color

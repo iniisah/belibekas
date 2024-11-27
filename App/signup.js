@@ -19,13 +19,19 @@ const SignupScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1}}>
       <AuthHeader 
         onLoginPress={() => navigation.navigate('Login')} 
         onRegisterPress={() => navigation.navigate('Signup')}
         isOnSignupScreen={true} 
       />
-      <View style={{ padding: 20 }}>
+      <View style={{ marginTop: 30, padding: 20 }}>
+        <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'left', marginBottom: 0, color: '#293C8F' }}>
+          BELI
+        </Text>
+        <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, color: '#293C8F'  }}>
+          BEKAS
+        </Text>
         <Text>Email</Text>
         <TextInput
           value={email}
@@ -43,7 +49,11 @@ const SignupScreen = ({ navigation }) => {
           style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}
         />
         {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
-        <Button title="Sign Up" onPress={handleSignup} />
+        <Button 
+        title="Sign Up" 
+        onPress={handleSignup} 
+        color="#293C8F" 
+        />
       </View>
     </View>
   );
