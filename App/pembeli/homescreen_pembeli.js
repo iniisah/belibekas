@@ -1,12 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 export default function App({ navigation }) {
+  const handleLogout = () => {
+    Alert.alert(
+      "Konfirmasi",
+      "Apakah yakin ingin keluar?",
+      [
+        {
+          text: "Tidak",
+          onPress: () => console.log("Cancel pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Ya",
+          onPress: () => navigation.navigate('Signup') 
+        }
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
         <TextInput
@@ -17,7 +35,6 @@ export default function App({ navigation }) {
       <Text>homescreen pembeli</Text>
       <StatusBar style="auto" />
 
-      {/* Footer Navigation */}
       <View style={styles.footer}>
         <TouchableOpacity 
           style={styles.footerButton} 

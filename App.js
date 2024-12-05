@@ -10,6 +10,7 @@ import keranjang from './App/pembeli/keranjang';
 import transaksi from './App/penjual/transaksi';
 import profilpenjual from './App/penjual/profilpjual';
 import AuthHeader from './App/AuthHeader';
+import editprofilpbli from './App/pembeli/editprofil';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,11 @@ export default function App() {
         <Stack.Screen 
           name="profil penjual" 
           component={profilpenjual} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="edit profil pembeli" 
+          component={editprofilpbli} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

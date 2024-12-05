@@ -1,11 +1,9 @@
-// firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth"; // Menambahkan autentikasi
-import { getFirestore } from "firebase/firestore"; // Menambahkan Firestore jika perlu
-import { getStorage } from "firebase/storage"; // Jika perlu menggunakan storage
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Impor AsyncStorage
+import { getAuth, getReactNativePersistence, initializeAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; 
+import { getStorage } from "firebase/storage"; 
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-// Konfigurasi Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBLIjeS64ethOdD9PwlDCFQ5j1B2g5UG9k",
   authDomain: "beli-bekas.firebaseapp.com",
@@ -16,15 +14,17 @@ const firebaseConfig = {
   measurementId: "G-KNTR24PDTL"
 };
 
-// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 
-// Inisialisasi Firebase Auth dengan persistensi menggunakan AsyncStorage
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage) // Menambahkan AsyncStorage untuk persistensi
-});
+let auth;
+if (!getAuth()) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage) 
+  });
+} else {
+  auth = getAuth(); 
+}
 
-// Ekspor layanan Firebase yang akan digunakan
 const firestore = getFirestore(app);
 const storage = getStorage(app);
 
