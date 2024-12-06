@@ -1,16 +1,14 @@
-//masih error
-
-
-
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Platform } from 'react-native';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const EditProfilScreen = ({ navigation }) => {
   const [name, setName] = useState('');
-  const [birthdate, setBirthdate] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [birthdate, setBirthdate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [loading, setLoading] = useState(true); // Indikator loading untuk memastikan data diambil terlebih dahulu
 
   const auth = getAuth();
   const db = getFirestore();
@@ -20,20 +18,24 @@ const EditProfilScreen = ({ navigation }) => {
       const user = auth.currentUser;
       if (user) {
         try {
-          const docRef = doc(db, 'users', user.uid); 
-          const docSnap = await getDoc(docRef);
+          // Cari dokumen berdasarkan field 'userId'
+          const userQuery = query(
+            collection(db, 'users'),
+            where('userId', '==', user.uid)
+          );
+          const querySnapshot = await getDocs(userQuery);
 
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
             setName(userData.name || '');
-            setBirthdate(userData.birthdate || '');
+            setBirthdate(userData.birthdate ? new Date(userData.birthdate) : new Date());
           } else {
             console.log('No user data found!');
           }
         } catch (error) {
           console.error('Error fetching user data: ', error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Data sudah siap, loading selesai
         }
       }
     };
@@ -41,9 +43,15 @@ const EditProfilScreen = ({ navigation }) => {
     fetchUserData();
   }, [auth, db]);
 
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleSave = async () => {
-    // Validate inputs
-    if (!name || !birthdate) {
+    if (!name.trim() || !birthdate) {
       Alert.alert('Error', 'Nama dan Tanggal Lahir harus diisi!', [{ text: 'OK' }]);
       return;
     }
@@ -51,20 +59,57 @@ const EditProfilScreen = ({ navigation }) => {
     const user = auth.currentUser;
     if (user) {
       try {
-        const docRef = doc(db, 'users', user.uid);
-        await updateDoc(docRef, {
-          name: name,
-          birthdate: birthdate,
-        });
+        const userQuery = query(
+          collection(db, 'users'),
+          where('userId', '==', user.uid)
+        );
+        const querySnapshot = await getDocs(userQuery);
 
-        Alert.alert('Sukses', 'Data berhasil disimpan!', [{ text: 'OK' }]);
-        navigation.goBack();
+        if (!querySnapshot.empty) {
+          const userDocRef = querySnapshot.docs[0].ref;
+
+          // Mengonversi tanggal ke format dd-mm-yyyy
+          const formattedBirthdate = formatDate(birthdate);
+
+          // Update dokumen yang ditemukan
+          await updateDoc(userDocRef, {
+            name: name.trim(),
+            birthdate: formattedBirthdate, // Menyimpan tanggal dalam format dd-mm-yyyy
+          });
+
+          Alert.alert('Sukses', 'Data berhasil disimpan!', [{ text: 'OK' }]);
+
+          // Reset form setelah data berhasil disimpan
+          setName('');
+          setBirthdate(new Date()); // Reset tanggal ke tanggal default
+
+          // Navigasi kembali setelah data disimpan
+          navigation.goBack(); // Kembali ke layar sebelumnya
+        } else {
+          Alert.alert('Error', 'Dokumen pengguna tidak ditemukan!', [{ text: 'OK' }]);
+        }
       } catch (error) {
-        console.error('Error updating user data: ', error);
+        console.error('Error updating user data:', error);
         Alert.alert('Error', 'Terjadi kesalahan saat menyimpan data.', [{ text: 'OK' }]);
       }
     }
   };
+
+  const onDateChange = (event, selectedDate) => {
+    setShowDatePicker(Platform.OS === 'ios' ? true : false); // Menjaga picker tetap ditampilkan di iOS
+    if (selectedDate) {
+      setBirthdate(selectedDate);
+    }
+  };
+
+  // Cegah render form ketika data masih dalam status loading
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>Memuat Data...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -82,12 +127,24 @@ const EditProfilScreen = ({ navigation }) => {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Tanggal Lahir:</Text>
-        <TextInput
-          style={styles.input}
-          value={birthdate}
-          onChangeText={setBirthdate}
-          placeholder="Masukkan tanggal lahir"
-        />
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <TextInput
+            style={styles.input}
+            value={birthdate ? birthdate.toLocaleDateString() : ''}
+            editable={false}
+            placeholder="Pilih tanggal lahir"
+          />
+        </TouchableOpacity>
+
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={birthdate}
+            mode="date"
+            display="default"
+            onChange={onDateChange}
+          />
+        )}
       </View>
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
