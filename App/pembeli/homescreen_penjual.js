@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert, Button } from 'react-native';
 
 export default function App({ navigation }) {
   const handleLogout = () => {
@@ -23,27 +23,35 @@ export default function App({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
+            BELI
+          </Text>
+          <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0'  }}>
+            BEKAS
+          </Text>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+      <Button title="Logout" onPress={() => handleLogout()} color='#293C8F' />
         <TextInput
           style={styles.searchBar}
           placeholder="Cari..."
         />
       </View>
-      <Text>homescreen pembeli</Text>
       <StatusBar style="auto" />
 
       <View style={styles.footer}>
         <TouchableOpacity 
           style={styles.footerButton} 
-          onPress={() => navigation.navigate('keranjang')}>
-          <Text style={styles.footerText}>Keranjang</Text>
+          onPress={() => navigation.navigate('transaksi')}>
+          <Text style={styles.footerText}>Transaksi</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton} 
-          onPress={() => navigation.navigate('profil pembeli')}>
+          onPress={() => navigation.navigate('tambahbrg')}>
+          <Text style={styles.footerText}>Tambah</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.footerButton} 
+          onPress={() => navigation.navigate('profil penjual')}>
           <Text style={styles.footerText}>Profil</Text>
         </TouchableOpacity>
       </View>
@@ -67,13 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-  },
-  logoutButton: {
-    padding: 10,
-  },
-  logoutText: {
-    color: '#007AFF',
-    fontSize: 12,
   },
   searchBar: {
     height: 40,

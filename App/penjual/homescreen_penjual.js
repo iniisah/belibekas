@@ -1,16 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert, Button } from 'react-native';
 
 export default function App({ navigation }) {
+  const handleLogout = () => {
+    Alert.alert(
+      "Konfirmasi",
+      "Apakah yakin ingin keluar?",
+      [
+        {
+          text: "Tidak",
+          onPress: () => console.log("Cancel pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Ya",
+          onPress: () => navigation.navigate('Signup') 
+        }
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
+            BELI
+          </Text>
+          <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0'  }}>
+            BEKAS
+          </Text>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+        <Button title="Logout" onPress={() => handleLogout()} color='#293C8F'/>
+        <TouchableOpacity
+          style={styles.headerButton}></TouchableOpacity>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Cari..."
+        />
       </View>
-      <Text>homescreen penjual</Text>
       <StatusBar style="auto" />
 
       <View style={styles.footer}>
@@ -49,18 +76,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
-  logoutButton: {
-    padding: 10,
-  },
-  logoutText: {
-    color: '#007AFF',
-    fontSize: 12,
+  headerButton:{
+    padding:5
   },
   searchBar: {
     height: 40,
-    width: 300,
+    width: 270,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
     paddingHorizontal: 10,
