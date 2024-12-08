@@ -99,7 +99,6 @@ const EditProfilScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Edit Profil Pembeli</Text>
-
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nama:</Text>
         <TextInput

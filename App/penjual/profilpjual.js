@@ -1,9 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
+
+const handleLogout = () => {
+  Alert.alert(
+    "Konfirmasi",
+    "Apakah yakin ingin keluar?",
+    [
+      {
+        text: "Tidak",
+        onPress: () => console.log("Cancel pressed"),
+        style: "cancel"
+      },
+      {
+        text: "Ya",
+        onPress: () => navigation.navigate('Signup') 
+      }
+    ]
+  );
+};
 const ProfilpenjualScreen = () => {
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -95,6 +113,11 @@ const ProfilpenjualScreen = () => {
           <Text style={styles.reviewButtonText}>Lihat Ulasan</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -163,6 +186,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  logoutButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   rating: {
     fontSize: 18,
     color: '#555',
@@ -179,6 +213,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 30,
+    backgroundColor: '#fff',
   },
 });
 

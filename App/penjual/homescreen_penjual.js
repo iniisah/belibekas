@@ -3,24 +3,6 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert, Button } from 'react-native';
 
 export default function App({ navigation }) {
-  const handleLogout = () => {
-    Alert.alert(
-      "Konfirmasi",
-      "Apakah yakin ingin keluar?",
-      [
-        {
-          text: "Tidak",
-          onPress: () => console.log("Cancel pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Ya",
-          onPress: () => navigation.navigate('Signup') 
-        }
-      ]
-    );
-  };
-
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
@@ -30,9 +12,6 @@ export default function App({ navigation }) {
             BEKAS
           </Text>
       <View style={styles.header}>
-        <Button title="Logout" onPress={() => handleLogout()} color='#293C8F'/>
-        <TouchableOpacity
-          style={styles.headerButton}></TouchableOpacity>
         <TextInput
           style={styles.searchBar}
           placeholder="Cari..."
@@ -83,7 +62,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 40,
-    width: 270,
+    width: 340,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
     paddingHorizontal: 10,
