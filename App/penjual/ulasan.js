@@ -2,15 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 
-const Keranjang = () => {
+const Ulasan = () => {
   const navigation = useNavigation(); 
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>〱</Text>
+      <Text style={styles.backButtonText}>〱</Text> 
       </TouchableOpacity>
-      <Text>Catatan transaksi</Text>
+      <Text>Halaman ulasan</Text>
     </View>
   );
 };
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Keranjang;
+export default Ulasan;

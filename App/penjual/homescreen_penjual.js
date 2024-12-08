@@ -48,7 +48,7 @@ export default function App({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton} 
-          onPress={() => navigation.navigate('tambahbrg')}>
+          onPress={() => navigation.navigate('tambah barang')}>
           <Text style={styles.footerText}>Tambah</Text>
         </TouchableOpacity>
         <TouchableOpacity 

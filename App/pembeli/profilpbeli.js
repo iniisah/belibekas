@@ -64,6 +64,9 @@ const ProfilPembeliScreen = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+        <Text style={styles.backButtonText}>〱</Text>
+      </TouchableOpacity>
       <Text style={styles.header}>Profil Pengguna</Text>
 
       <View style={styles.infoContainer}>
@@ -91,8 +94,21 @@ const ProfilPembeliScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
     backgroundColor: '#fff',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
   },
   header: {
     fontSize: 24,

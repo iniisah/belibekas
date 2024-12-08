@@ -66,6 +66,9 @@ const ProfilpenjualScreen = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+        <Text style={styles.backButtonText}>〱</Text>
+      </TouchableOpacity>
       <Text style={styles.header}>Profil Pengguna</Text>
       <View style={styles.boxContainer}>
         <Text style={styles.boxHeader}>DATA PRIBADI</Text>
@@ -88,7 +91,7 @@ const ProfilpenjualScreen = () => {
       <View style={styles.boxContainer}>
         <Text style={styles.boxHeader}>REVIEW</Text>
         <Text style={styles.rating}>Rating Rata-rata: {averageRating.toFixed(1)} ★</Text>
-        <TouchableOpacity style={styles.reviewButton} onPress={() => navigation.navigate('Lihat Ulasan')}>
+        <TouchableOpacity style={styles.reviewButton} onPress={() => navigation.navigate('ulasan')}>
           <Text style={styles.reviewButtonText}>Lihat Ulasan</Text>
         </TouchableOpacity>
       </View>
@@ -98,15 +101,30 @@ const ProfilpenjualScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    top:20,
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
   },
   header: {
+    marginTop:40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
   },
   boxContainer: {
     backgroundColor: '#f9f9f9',

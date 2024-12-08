@@ -11,6 +11,9 @@ import transaksi from './App/penjual/transaksi';
 import profilpenjual from './App/penjual/profilpjual';
 import AuthHeader from './App/AuthHeader';
 import editprofilpbli from './App/pembeli/editprofil';
+import editprofilpjual from './App/penjual/editprofil2';
+import ulasan from './App/penjual/ulasan';
+import tambahbrg from './App/penjual/tambahbrg';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +69,21 @@ export default function App() {
         <Stack.Screen 
           name="edit profil pembeli" 
           component={editprofilpbli} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="edit profil penjual" 
+          component={editprofilpjual} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="ulasan" 
+          component={ulasan} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="tambah barang" 
+          component={tambahbrg} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>
