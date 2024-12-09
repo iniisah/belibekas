@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +22,7 @@ const handleLogout = () => {
     ]
   );
 };
+
 const ProfilpenjualScreen = () => {
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -30,7 +31,6 @@ const ProfilpenjualScreen = () => {
   });
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const auth = getAuth();
   const db = getFirestore();
   const navigation = useNavigation();
@@ -49,10 +49,32 @@ const ProfilpenjualScreen = () => {
               birthdate: docSnap.data().birthdate || 'Tidak Tersedia',
               email: docSnap.data().email || user.email,
             });
+          } else {
+            const userQuery = query(
+              collection(db, 'users'),
+              where('userId', '==', user.uid)
+            );
+            const querySnapshot = await getDocs(userQuery);
+
+            if (!querySnapshot.empty) {
+              const userData = querySnapshot.docs[0].data();
+              setUserInfo({
+                name: userData.name || 'Tidak Tersedia',
+                birthdate: userData.birthdate || 'Tidak Tersedia',
+                email: userData.email || user.email,
+              });
+            } else {
+              console.log('No document matches the UID!');
+            }
           }
         } catch (error) {
           console.error('Error fetching user data: ', error);
+        }finally {
+          setLoading(false);
         }
+      } else {
+        console.log('No user logged in.');
+        setLoading(false);
       }
     };
 
