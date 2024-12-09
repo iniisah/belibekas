@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#4169E1',
         borderTopRightRadius: 15,
         height: 50,
-        marginTop: 40, // Add marginTop here
+        marginTop: 40, 
     },
     button: {
         flex: 1,
@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     active: {
-        backgroundColor: '#293C8F', // Active button color
+        backgroundColor: '#293C8F', 
     },
     inactive: {
-        backgroundColor: '#2C3E50', // Inactive button color
+        backgroundColor: '#2C3E50', 
     },
     activeText: {
         color: '#FFFFFF',

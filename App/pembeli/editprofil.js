@@ -8,7 +8,7 @@ const EditProfilScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [birthdate, setBirthdate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [loading, setLoading] = useState(true); // Indikator loading untuk memastikan data diambil terlebih dahulu
+  const [loading, setLoading] = useState(true); 
 
   const auth = getAuth();
   const db = getFirestore();
@@ -18,7 +18,6 @@ const EditProfilScreen = ({ navigation }) => {
       const user = auth.currentUser;
       if (user) {
         try {
-          // Cari dokumen berdasarkan field 'userId'
           const userQuery = query(
             collection(db, 'users'),
             where('userId', '==', user.uid)
@@ -35,7 +34,7 @@ const EditProfilScreen = ({ navigation }) => {
         } catch (error) {
           console.error('Error fetching user data: ', error);
         } finally {
-          setLoading(false); // Data sudah siap, loading selesai
+          setLoading(false); 
         }
       }
     };
@@ -68,23 +67,19 @@ const EditProfilScreen = ({ navigation }) => {
         if (!querySnapshot.empty) {
           const userDocRef = querySnapshot.docs[0].ref;
 
-          // Mengonversi tanggal ke format dd-mm-yyyy
           const formattedBirthdate = formatDate(birthdate);
 
-          // Update dokumen yang ditemukan
           await updateDoc(userDocRef, {
             name: name.trim(),
-            birthdate: formattedBirthdate, // Menyimpan tanggal dalam format dd-mm-yyyy
+            birthdate: formattedBirthdate, 
           });
 
           Alert.alert('Sukses', 'Data berhasil disimpan!', [{ text: 'OK' }]);
 
-          // Reset form setelah data berhasil disimpan
           setName('');
-          setBirthdate(new Date()); // Reset tanggal ke tanggal default
+          setBirthdate(new Date()); 
 
-          // Navigasi kembali setelah data disimpan
-          navigation.goBack(); // Kembali ke layar sebelumnya
+          navigation.goBack(); 
         } else {
           Alert.alert('Error', 'Dokumen pengguna tidak ditemukan!', [{ text: 'OK' }]);
         }
@@ -96,7 +91,7 @@ const EditProfilScreen = ({ navigation }) => {
   };
 
   const onDateChange = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios' ? true : false); // Menjaga picker tetap ditampilkan di iOS
+    setShowDatePicker(Platform.OS === 'ios' ? true : false); 
     if (selectedDate) {
       setBirthdate(selectedDate);
     }

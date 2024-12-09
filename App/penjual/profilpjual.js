@@ -4,36 +4,6 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-const ProfilpenjualScreen = () => {
-  const [userInfo, setUserInfo] = useState({
-    name: '',
-    birthdate: '',
-    email: '',
-  });
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const auth = getAuth();
-  const db = getFirestore();
-  const navigation = useNavigation();
-
-const handleLogout = () => {
-  Alert.alert(
-    "Konfirmasi",
-    "Apakah yakin ingin keluar?",
-    [
-      {
-        text: "Tidak",
-        onPress: () => console.log("Cancel pressed"),
-        style: "cancel"
-      },
-      {
-        text: "Ya",
-        onPress: () => navigation.navigate('Signup') 
-      }
-    ]
-  );
-};
 
 const ProfilpenjualScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -46,6 +16,24 @@ const ProfilpenjualScreen = () => {
   const auth = getAuth();
   const db = getFirestore();
   const navigation = useNavigation();
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Konfirmasi",
+      "Apakah yakin ingin keluar?",
+      [
+        {
+          text: "Tidak",
+          onPress: () => console.log("Cancel pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Ya",
+          onPress: () => navigation.navigate('Signup'), // Perbaikan di sini
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -81,7 +69,7 @@ const ProfilpenjualScreen = () => {
           }
         } catch (error) {
           console.error('Error fetching user data: ', error);
-        }finally {
+        } finally {
           setLoading(false);
         }
       } else {

@@ -25,7 +25,7 @@ const SignupScreen = ({ navigation }) => {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-    return `${day}-${month}-${year}`; // Format dd-mm-yyyy
+    return `${day}-${month}-${year}`; 
   };
 
   const handleSignup = async () => {
@@ -33,21 +33,18 @@ const SignupScreen = ({ navigation }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
 
-      // Format tanggal lahir sebelum disimpan
       const formattedBirthdate = formatDate(birthdate);
 
       await addDoc(collection(firestore, 'users'), {
         userId: userId,
         name: name,
-        birthdate: formattedBirthdate, // Menyimpan tanggal dalam format dd-mm-yyyy
+        birthdate: formattedBirthdate, 
         email: email,
         createdAt: new Date().toISOString(),
       });
 
-      // Reset fields setelah berhasil sign up
       resetFields();
 
-      // Navigasi ke halaman Login
       navigation.navigate('Login');
     } catch (err) {
       setError(err.message);
@@ -88,7 +85,7 @@ const SignupScreen = ({ navigation }) => {
           />
           <Text>Birthdate</Text>
           <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ borderWidth: 1, marginBottom: 10, padding: 10 }}>
-            <Text>{formatDate(birthdate)}</Text> {/* Tampilkan tanggal dalam format dd-mm-yyyy */}
+            <Text>{formatDate(birthdate)}</Text>
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker

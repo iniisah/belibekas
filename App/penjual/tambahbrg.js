@@ -26,7 +26,7 @@ const Tambahbrg = () => {
         createdAt: new Date(),
       });
       Alert.alert('Sukses', "Barang berhasil ditambahkan!");
-      navigation.goBack(); // Go back to the previous screen
+      navigation.goBack(); 
     } catch (error) {
       console.error('Error adding document: ', error);
       Alert.alert('Error', 'Terjadi kesalahan saat menambahkan barang.');
