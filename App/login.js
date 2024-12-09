@@ -66,11 +66,11 @@ export default function LoginScreen() {
         isOnSignupScreen={false}
       />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ marginTop: 30, padding: 20 }}>
-          <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'left', marginBottom: 0, color: '#293C8F' }}>
+        <View style={{marginTop: 30, padding: 20 }}>
+          <Text style={{ fontSize: 85, fontWeight: 'bold', textAlign: 'left', marginBottom: -20, color: '#293C8F' }}>
             BELI
           </Text>
-          <Text style={{ fontSize: 70, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, color: '#293C8F'  }}>
+          <Text style={{ fontSize: 85, fontWeight: 'bold', textAlign: 'right', marginBottom: 10, color: '#293C8F'  }}>
             BEKAS
           </Text>
           <Text>Email</Text>
