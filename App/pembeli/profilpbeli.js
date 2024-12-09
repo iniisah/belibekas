@@ -1,27 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';  
-
-
-const handleLogout = () => {
-  Alert.alert(
-    "Konfirmasi",
-    "Apakah yakin ingin keluar?",
-    [
-      {
-        text: "Tidak",
-        onPress: () => console.log("Cancel pressed"),
-        style: "cancel"
-      },
-      {
-        text: "Ya",
-        onPress: () => navigation.navigate('Signup') 
-      }
-    ]
-  );
-};
 
 const ProfilPembeliScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -33,6 +14,24 @@ const ProfilPembeliScreen = () => {
   const auth = getAuth();
   const db = getFirestore();
   const navigation = useNavigation(); 
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Konfirmasi",
+      "Apakah yakin ingin keluar?",
+      [
+        {
+          text: "Tidak",
+          onPress: () => console.log("Cancel pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Ya",
+          onPress: () => navigation.navigate('Signup') 
+        }
+      ]
+    );
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -112,7 +111,6 @@ const ProfilPembeliScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
-      
   );
 };
 

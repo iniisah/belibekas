@@ -1,22 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 export default function App({ navigation }) {
-  
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
-            BELI
-          </Text>
-          <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0'  }}>
-            BEKAS
-          </Text>
+        BELI
+      </Text>
+      <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
+        BEKAS
+      </Text>
       <View style={styles.header}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Cari..."
-        />
+        <TextInput style={styles.searchBar} placeholder="Cari..." />
       </View>
       <StatusBar style="auto" />
 
@@ -25,6 +21,11 @@ export default function App({ navigation }) {
           style={styles.footerButton} 
           onPress={() => navigation.navigate('keranjang')}>
           <Text style={styles.footerText}>Keranjang</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.footerButton} 
+          onPress={() => navigation.navigate('transaksi')}>
+          <Text style={styles.footerText}>Transaksi</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton} 

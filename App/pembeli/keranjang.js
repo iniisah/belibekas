@@ -10,7 +10,7 @@ const Keranjang = () => {
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
-      <Text>Catatan transaksi</Text>
+      <Text>keranjang</Text>
     </View>
   );
 };

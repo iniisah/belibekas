@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, Navi} from 'react-native';
-import { useNavigation } from '@react-navigation/native';  
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 const Tambahbrg = () => {
   const [nama, setNama] = useState('');
@@ -8,10 +9,33 @@ const Tambahbrg = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [informasiLain, setInformasiLain] = useState('');
   const navigation = useNavigation(); 
+  const db = getFirestore();
+
+  const handleUpload = async () => {
+    if (!nama || !harga || !deskripsi) {
+      Alert.alert('Error', 'Semua field kecuali Informasi Lain wajib diisi!');
+      return;
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, 'barang'), {
+        nama,
+        harga: parseFloat(harga),
+        deskripsi,
+        informasiLain,
+        createdAt: new Date(),
+      });
+      Alert.alert('Sukses', "Barang berhasil ditambahkan!");
+      navigation.goBack(); // Go back to the previous screen
+    } catch (error) {
+      console.error('Error adding document: ', error);
+      Alert.alert('Error', 'Terjadi kesalahan saat menambahkan barang.');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Tambah Barang</Text>
@@ -44,8 +68,7 @@ const Tambahbrg = () => {
           multiline
         />
 
-        {/* Upload Button */}
-        <TouchableOpacity style={styles.uploadButton}>
+        <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
           <Text style={styles.uploadButtonText}>Upload</Text>
         </TouchableOpacity>
       </View>

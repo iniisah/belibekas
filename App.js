@@ -11,6 +11,7 @@ import transaksi from './App/penjual/transaksi';
 import profilpenjual from './App/penjual/profilpjual';
 import AuthHeader from './App/AuthHeader';
 import editprofilpbli from './App/pembeli/editprofil';
+import transaksipbeli from './App/pembeli/transaksipbeli';
 import editprofilpjual from './App/penjual/editprofil2';
 import ulasan from './App/penjual/ulasan';
 import tambahbrg from './App/penjual/tambahbrg';
@@ -84,6 +85,11 @@ export default function App() {
         <Stack.Screen 
           name="tambah barang" 
           component={tambahbrg} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="transaksipbeli" 
+          component={transaksipbeli} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>
