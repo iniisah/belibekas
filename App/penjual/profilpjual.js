@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -17,23 +17,35 @@ const ProfilpenjualScreen = () => {
   const db = getFirestore();
   const navigation = useNavigation();
 
-  const handleLogout = () => {
-    Alert.alert(
-      "Konfirmasi",
-      "Apakah yakin ingin keluar?",
-      [
-        {
-          text: "Tidak",
-          onPress: () => console.log("Cancel pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Ya",
-          onPress: () => navigation.navigate('Signup') 
-        }
-      ]
-    );
-  };
+const handleLogout = () => {
+  Alert.alert(
+    "Konfirmasi",
+    "Apakah yakin ingin keluar?",
+    [
+      {
+        text: "Tidak",
+        onPress: () => console.log("Cancel pressed"),
+        style: "cancel"
+      },
+      {
+        text: "Ya",
+        onPress: () => navigation.navigate('Signup') 
+      }
+    ]
+  );
+};
+
+const ProfilpenjualScreen = () => {
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    birthdate: '',
+    email: '',
+  });
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  const db = getFirestore();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -49,10 +61,32 @@ const ProfilpenjualScreen = () => {
               birthdate: docSnap.data().birthdate || 'Tidak Tersedia',
               email: docSnap.data().email || user.email,
             });
+          } else {
+            const userQuery = query(
+              collection(db, 'users'),
+              where('userId', '==', user.uid)
+            );
+            const querySnapshot = await getDocs(userQuery);
+
+            if (!querySnapshot.empty) {
+              const userData = querySnapshot.docs[0].data();
+              setUserInfo({
+                name: userData.name || 'Tidak Tersedia',
+                birthdate: userData.birthdate || 'Tidak Tersedia',
+                email: userData.email || user.email,
+              });
+            } else {
+              console.log('No document matches the UID!');
+            }
           }
         } catch (error) {
           console.error('Error fetching user data: ', error);
+        }finally {
+          setLoading(false);
         }
+      } else {
+        console.log('No user logged in.');
+        setLoading(false);
       }
     };
 
