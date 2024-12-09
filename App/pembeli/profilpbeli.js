@@ -4,6 +4,25 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';  
 
+
+const handleLogout = () => {
+  Alert.alert(
+    "Konfirmasi",
+    "Apakah yakin ingin keluar?",
+    [
+      {
+        text: "Tidak",
+        onPress: () => console.log("Cancel pressed"),
+        style: "cancel"
+      },
+      {
+        text: "Ya",
+        onPress: () => navigation.navigate('Signup') 
+      }
+    ]
+  );
+};
+
 const ProfilPembeliScreen = () => {
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -11,7 +30,6 @@ const ProfilPembeliScreen = () => {
     email: '',
   });
   const [loading, setLoading] = useState(true);
-
   const auth = getAuth();
   const db = getFirestore();
   const navigation = useNavigation(); 
@@ -87,7 +105,14 @@ const ProfilPembeliScreen = () => {
       <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('edit profil pembeli')}>
         <Text style={styles.editButtonText}>Ubah Informasi Pribadi</Text>
       </TouchableOpacity>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
+      
   );
 };
 
@@ -141,6 +166,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  logoutButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#fff',
   },
 });
 

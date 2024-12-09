@@ -1,38 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
 
 export default function App({ navigation }) {
-  const handleLogout = () => {
-    Alert.alert(
-      "Konfirmasi",
-      "Apakah yakin ingin keluar?",
-      [
-        {
-          text: "Tidak",
-          onPress: () => console.log("Cancel pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Ya",
-          onPress: () => navigation.navigate('Signup') 
-        }
-      ]
-    );
-  };
-
+  
   return (
     <View style={styles.container}>
+      <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0' }}>
+            BELI
+          </Text>
+          <Text style={{ fontSize: 65, fontWeight: 'bold', textAlign: 'center', marginBottom: 0, color: '#f0f0f0'  }}>
+            BEKAS
+          </Text>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
         <TextInput
           style={styles.searchBar}
           placeholder="Cari..."
         />
       </View>
-      <Text>homescreen pembeli</Text>
       <StatusBar style="auto" />
 
       <View style={styles.footer}>
@@ -66,7 +51,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   logoutButton: {
     padding: 10,
@@ -77,7 +62,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 40,
-    width: 275,
+    width: 340,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
     paddingHorizontal: 10,
