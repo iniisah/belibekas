@@ -22,18 +22,12 @@ const Transaksi = () => {
 
   return (
     <View style={styles.container}>
-      {/* Tombol Kembali */}
       <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
+        style={styles.backButton}onPress={() => navigation.goBack()}
       >
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
-
-      {/* Header */}
       <Text style={styles.header}>Request List</Text>
-
-      {/* ScrollView untuk daftar barang */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {data.map((item) => (
           <View key={item.id} style={styles.card}>
@@ -67,9 +61,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
   },
+  header: {
+    marginTop:40,
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 20,
     left: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -79,13 +80,6 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#fff',
     fontSize: 7,
-  },
-  header: {
-    marginTop: 60,
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
   },
   scrollContainer: {
     paddingBottom: 20,

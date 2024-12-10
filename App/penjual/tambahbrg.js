@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 const Tambahbrg = () => {
   const [nama, setNama] = useState('');
@@ -10,10 +11,16 @@ const Tambahbrg = () => {
   const [informasiLain, setInformasiLain] = useState('');
   const navigation = useNavigation(); 
   const db = getFirestore();
-
+  const auth = getAuth();
+  const user = auth.currentUser;
   const handleUpload = async () => {
     if (!nama || !harga || !deskripsi) {
       Alert.alert('Error', 'Semua field kecuali Informasi Lain wajib diisi!');
+      return;
+    }
+
+    if (!user) {
+      Alert.alert('Error', 'User tidak terautentikasi. Silakan login ulang.');
       return;
     }
 
@@ -24,6 +31,7 @@ const Tambahbrg = () => {
         deskripsi,
         informasiLain,
         createdAt: new Date(),
+        uid: user.uid,
       });
       Alert.alert('Sukses', "Barang berhasil ditambahkan!");
       navigation.goBack(); 
@@ -35,7 +43,7 @@ const Tambahbrg = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Tambah Barang</Text>
@@ -82,9 +90,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
   },
+  header: {
+    marginTop: 40,
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 20,
     left: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -94,13 +109,6 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#fff',
     fontSize: 7,
-  },
-  header: {
-    marginTop:40,
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
   },
   boxContainer: {
     backgroundColor: '#f0f0f0',

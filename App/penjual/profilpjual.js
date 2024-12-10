@@ -29,7 +29,7 @@ const ProfilpenjualScreen = () => {
         },
         {
           text: "Ya",
-          onPress: () => navigation.navigate('Signup'), // Perbaikan di sini
+          onPress: () => navigation.navigate('Signup'),
         },
       ]
     );
@@ -147,9 +147,8 @@ const ProfilpenjualScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    top:20,
     flex: 1,
-    padding: 20,
+    padding: 30,
     backgroundColor: '#fff',
   },
   header: {

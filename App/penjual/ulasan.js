@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import { useNavigation } from '@react-navigation/native';  
+import { useNavigation } from '@react-navigation/native';
 
 const UlasanScreen = () => {
+  const navigation = useNavigation();
   const ulasanData = [
     { id: "1", username: "Username Pembeli", review: "Ulasan 1" },
     { id: "2", username: "Username Pembeli", review: "Ulasan 2" },
@@ -18,11 +19,13 @@ const UlasanScreen = () => {
       </View>
     </View>
   );
-  const navigation = useNavigation(); 
-
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.backButton}onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>〱</Text>
+      </TouchableOpacity>
       <Text style={styles.header}>Ulasan</Text>
       <FlatList
         data={ulasanData}
@@ -38,13 +41,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-  },
-  header: {
+  },header: {
     marginTop:40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
   },
   ulasanList: {
     padding: 10,
