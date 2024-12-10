@@ -1,24 +1,46 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { KeranjangContext } from '../KeranjangContext';
 
 const Keranjang = ({ navigation }) => {
-  const { keranjang, hapusDariKeranjang } = useContext(KeranjangContext);
+  const { keranjang, hapusDariKeranjang, checkout } = useContext(KeranjangContext);
+  const [selectedItems, setSelectedItems] = useState([]);
 
-  const handleItemPress = (item) => {
-    navigation.navigate('detailbrg', { nama: item.nama, harga: item.harga, deskripsi: item.deskripsi });
+  // Toggle pemilihan untuk setiap item
+  const toggleSelection = (item) => {
+    if (selectedItems.includes(item)) {
+      setSelectedItems(selectedItems.filter((i) => i !== item));
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
   };
 
-  const handleDelete = (item) => {
-    hapusDariKeranjang(item);
+  const handleCheckout = async () => {
+    if (selectedItems.length === 0) {
+      Alert.alert('Peringatan', 'Silakan pilih item untuk checkout!');
+      return;
+    }
+
+    try {
+      await checkout(selectedItems);
+      Alert.alert('Checkout Berhasil');
+      setSelectedItems([]); // Reset item yang dipilih
+    } catch (error) {
+      Alert.alert('Gagal', 'Terjadi kesalahan saat proses checkout');
+      console.error(error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack('homeScreen penjual')}
+      >
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
-      <Text style={styles.header}>KeranjangAnda</Text>
+      <Text style={styles.header}>Keranjang Anda</Text>
+
       {keranjang.length === 0 ? (
         <Text style={styles.emptyText}>Keranjang masih kosong</Text>
       ) : (
@@ -27,19 +49,28 @@ const Keranjang = ({ navigation }) => {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <TouchableOpacity style={styles.itemContainer} onPress={() => handleItemPress(item)}>
+              <TouchableOpacity
+                style={styles.itemContainer}
+                onPress={() => toggleSelection(item)}
+              >
                 <Text style={styles.itemText}>{item.nama}</Text>
                 <Text style={styles.itemText}>Rp {item.harga.toLocaleString()}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDelete(item)}
+                onPress={() => hapusDariKeranjang(item)}
               >
                 <Text style={styles.deleteText}>Hapus</Text>
               </TouchableOpacity>
             </View>
           )}
         />
+      )}
+
+      {selectedItems.length > 0 && (
+        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+          <Text style={styles.checkoutText}>Checkout ({selectedItems.length} item)</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -51,11 +82,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginTop:40,
+    marginTop: 20,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 20,
+    marginBottom: 10,
   },
   emptyText: {
     marginTop: 20,
@@ -80,15 +111,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     borderRadius: 8,
   },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 7,
-  },
   itemContainer: {
     flex: 3,
-  },
-  itemText: {
-    fontSize: 16,
+    paddingLeft: 10,
   },
   deleteButton: {
     flex: 1,
@@ -101,6 +126,18 @@ const styles = StyleSheet.create({
   deleteText: {
     color: 'white',
     fontSize: 12,
+  },
+  checkoutButton: {
+    backgroundColor: 'blue',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  checkoutText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

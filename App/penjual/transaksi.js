@@ -1,140 +1,190 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../../firebaseConfig';
 
 const Transaksi = () => {
   const navigation = useNavigation();
+  const [transaksi, setTransaksi] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const data = [
-    {
-      id: 1,
-      name: 'Barang 1',
-      hargaAsli: 'Rp. 1.000.000',
-      hargaNego: 'Rp. 900.000',
-    },
-    {
-      id: 2,
-      name: 'Barang 2',
-      hargaAsli: 'Rp. 500.000',
-      hargaNego: 'Rp. 450.000',
-    },
-  ];
+  useEffect(() => {
+    const fetchTransaksi = async () => {
+      try {
+        const transaksiCollection = collection(firestore, 'transaksi');
+        const transaksiSnapshot = await getDocs(transaksiCollection);
+
+        const transaksiList = transaksiSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setTransaksi(transaksiList);
+      } catch (error) {
+        console.error('Error saat memuat transaksi:', error);
+        Alert.alert('Error', 'Terjadi kesalahan saat memuat transaksi.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransaksi();
+  }, []);
+
+  const konfirmasiTransaksi = async (id) => {
+    try {
+      const transaksiRef = doc(firestore, 'transaksi', id);
+      await updateDoc(transaksiRef, { status: 'Telah Dikonfirmasi' });
+      Alert.alert('Berhasil', 'Transaksi berhasil dikonfirmasi.');
+
+      setTransaksi((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, status: 'Telah Dikonfirmasi' } : item
+        )
+      );
+    } catch (error) {
+      console.error('Error saat mengonfirmasi transaksi:', error);
+      Alert.alert('Gagal', 'Terjadi kesalahan saat mengonfirmasi transaksi.');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}onPress={() => navigation.goBack()}
-      >
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
-      <Text style={styles.header}>Request List</Text>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {data.map((item) => (
-          <View key={item.id} style={styles.card}>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/80' }}
-              style={styles.image}
-            />
-            <View style={styles.details}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.price}>Harga Asli: {item.hargaAsli}</Text>
-              <Text style={styles.price}>Harga Nego: {item.hargaNego}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.acceptButton}>
-                  <Text style={styles.buttonText}>Accept</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.declineButton}>
-                  <Text style={styles.buttonText}>Decline</Text>
-                </TouchableOpacity>
+      <Text style={styles.header}>Daftar Transaksi</Text>
+
+      {loading ? (
+        <Text style={styles.loadingText}>Memuat data...</Text>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {transaksi.length > 0 ? (
+            transaksi.map((item) => (
+              <View key={item.id} style={styles.card}>
+                <Image
+                  source={{ uri: 'https://via.placeholder.com/80' }}
+                  style={styles.image}
+                />
+                <View style={styles.details}>
+                  <Text style={styles.itemName}>{item.items?.[0]?.nama || 'Nama Barang'}</Text>
+                  <Text style={styles.price}>
+                    Harga: Rp {item.items?.[0]?.harga?.toLocaleString() || '0'}
+                  </Text>
+                  <Text style={styles.status}>
+                    Status: {item.status || 'Belum Konfirmasi'}
+                  </Text>
+                  <View style={styles.buttonContainer}>
+                    {item.status !== 'Telah Dikonfirmasi' && (
+                      <TouchableOpacity
+                        style={styles.confirmButton}
+                        onPress={() => konfirmasiTransaksi(item.id)}
+                      >
+                        <Text style={styles.buttonText}>Konfirmasi</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>Belum ada transaksi yang ditemukan.</Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
+    backgroundColor: '#f7f7f7',
   },
   header: {
-    marginTop:40,
-    fontSize: 24,
+    marginBottom: 15,
+    fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
+    color: '#333',
   },
   backButton: {
+    padding: 10,
+    backgroundColor: '#007AFF',
+    borderRadius: 50,
     position: 'absolute',
     top: 20,
-    left: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
+    left: 10,
+    zIndex: 10,
   },
   backButtonText: {
     color: '#fff',
-    fontSize: 7,
+    fontSize: 20,
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center',
   },
   scrollContainer: {
     paddingBottom: 20,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    elevation: 2,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
   },
   image: {
     width: 80,
     height: 80,
-    borderRadius: 10,
-    marginRight: 10,
+    borderRadius: 8,
+    marginRight: 15,
   },
   details: {
     flex: 1,
-    justifyContent: 'space-between',
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
   price: {
-    fontSize: 14,
+    fontSize: 16,
+    marginTop: 5,
     color: '#555',
-    marginVertical: 2,
+  },
+  status: {
+    fontSize: 14,
+    marginTop: 5,
+    color: '#28a745',
   },
   buttonContainer: {
-    flexDirection: 'row',
     marginTop: 10,
+    alignItems: 'flex-start',
   },
-  acceptButton: {
-    flex: 1,
-    backgroundColor: '#4CAF50',
-    paddingVertical: 8,
-    marginRight: 5,
+  confirmButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007AFF',
     borderRadius: 5,
-    alignItems: 'center',
-  },
-  declineButton: {
-    flex: 1,
-    backgroundColor: '#F44336',
-    paddingVertical: 8,
-    marginLeft: 5,
-    borderRadius: 5,
-    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: 'gray',
+    marginTop: 30,
   },
 });
 

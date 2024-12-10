@@ -13,8 +13,8 @@ const DetailBarang = ({ route, navigation }) => {
     setIsAdded(sudahAda);
   }, [keranjang]);
 
-  const handleAddToCart = () => {
-    const berhasilDitambahkan = tambahkanKeKeranjang({ nama, harga, deskripsi });
+  const handleAddToCart = async () => {
+    const berhasilDitambahkan = await tambahkanKeKeranjang({ nama, harga, deskripsi });
     if (berhasilDitambahkan) {
       setIsAdded(true);
       navigation.navigate('keranjang');
