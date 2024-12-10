@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 // Higher-Order Function 
 const filterByPrice = (minHarga, maxHarga) => (item) => {
@@ -14,6 +15,7 @@ export default function App({ navigation }) {
   const [minHarga, setMinHarga] = useState(0);
   const [filterVisible, setFilterVisible] = useState(false); 
   const db = getFirestore(); 
+  const auth = getAuth();
 
   useEffect(() => {
     const fetchBarang = async () => {
@@ -21,7 +23,10 @@ export default function App({ navigation }) {
         const querySnapshot = await getDocs(collection(db, 'barang'));
         const items = [];
         querySnapshot.forEach((doc) => {
-          items.push({ id: doc.id, ...doc.data() });
+          const data = doc.data();
+          if (data.uid !== auth.currentUser?.uid) {
+            items.push({ id: doc.id, ...data });
+          }
         });
         setBarang(items);
         setFilteredBarang(items);
@@ -32,6 +37,7 @@ export default function App({ navigation }) {
 
     fetchBarang();
   }, []);
+  
 
   const handleFilter = () => {
     const filterFunction = filterByPrice(minHarga, maxHarga);
