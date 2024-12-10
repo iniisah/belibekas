@@ -7,7 +7,7 @@ const Riwayat = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text>Riwayat pembeli</Text>
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 20,
     left: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#fff',
-    fontSize: 9,
+    fontSize: 7,
   },
 });
 

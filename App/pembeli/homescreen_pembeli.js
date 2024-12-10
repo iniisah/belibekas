@@ -11,6 +11,7 @@ export default function App({ navigation }) {
   const [barang, setBarang] = useState([]); 
   const [filteredBarang, setFilteredBarang] = useState([]); 
   const [maxHarga, setMaxHarga] = useState(1000000);
+  const [minHarga, setMinHarga] = useState(0);
   const [filterVisible, setFilterVisible] = useState(false); 
   const db = getFirestore(); 
 
@@ -47,14 +48,15 @@ export default function App({ navigation }) {
           placeholder="Cari..."
           keyboardType="default"
         />
-      </View>
-
-      <TouchableOpacity
+        <TouchableOpacity
         style={styles.filterButton}
         onPress={() => setFilterVisible(!filterVisible)}
-      >
-        <Text style={styles.filterText}>Filter</Text>
-      </TouchableOpacity>
+        >
+          <Text style={styles.filterText}>Filter</Text>
+        </TouchableOpacity>
+      </View>
+
+      
 
       {filterVisible && (
         <View style={styles.filterContainer}>
@@ -145,10 +147,10 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'orange',
-    padding: 8,
+    top: 15,
+    right: 15,
+    backgroundColor: '#007AFF',
+    padding: 6,
     borderRadius: 5,
   },
   filterText: {

@@ -85,26 +85,24 @@ const ProfilPembeliScreen = () => {
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Profil Pengguna</Text>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Nama:</Text>
-        <Text style={styles.value}>{userInfo.name}</Text>
+      <View style={styles.boxContainer}>
+        <Text style={styles.boxHeader}>DATA PRIBADI</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Nama:</Text>
+          <Text style={styles.value}>{userInfo.name}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Tanggal Lahir:</Text>
+          <Text style={styles.value}>{userInfo.birthdate}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{userInfo.email}</Text>
+        </View>
+        <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('edit profil penjual')}>
+          <Text style={styles.editButtonText}>Ubah Informasi Pribadi</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Tanggal Lahir:</Text>
-        <Text style={styles.value}>{userInfo.birthdate}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{userInfo.email}</Text>
-      </View>
-
-      <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('edit profil pembeli')}>
-        <Text style={styles.editButtonText}>Ubah Informasi Pribadi</Text>
-      </TouchableOpacity>
-
       <View style={styles.footer}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -122,7 +120,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 20,
     left: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -134,16 +132,28 @@ const styles = StyleSheet.create({
     fontSize: 7,
   },
   header: {
+    marginTop:40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
   },
+  boxContainer: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 20,
+    marginBottom: 20,
+  },
+  boxHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
-    paddingHorizontal: 10,
   },
   label: {
     fontSize: 16,
@@ -183,7 +193,7 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 10,
+    paddingVertical: 30,
     backgroundColor: '#fff',
   },
 });
