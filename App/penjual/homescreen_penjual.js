@@ -24,7 +24,7 @@ export default function App({ navigation }) {
     }
   
     const unsubscribe = onSnapshot(
-      query(collection(db, 'barang'), where('uid', '==', user.uid)),
+      query(collection(db, 'barang'), where('userId', '==', user.uid)),
       (querySnapshot) => {
         const items = [];
         querySnapshot.forEach((doc) => {

@@ -1,12 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { KeranjangContext } from '../KeranjangContext';
+import { getAuth } from 'firebase/auth'; // Import Firebase authentication
+import { getFirestore, collection, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 const Keranjang = ({ navigation }) => {
   const { keranjang, hapusDariKeranjang, checkout } = useContext(KeranjangContext);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [filteredKeranjang, setFilteredKeranjang] = useState([]);
 
-  // Toggle pemilihan untuk setiap item
+  const auth = getAuth();
+  const currentUserUID = auth.currentUser ? auth.currentUser.uid : null;
+
+  const db = getFirestore();
+
+  useEffect(() => {
+    if (currentUserUID) {
+      const filteredItems = keranjang.filter(item => item.uid === currentUserUID);
+      setFilteredKeranjang(filteredItems);
+    }
+  }, [keranjang, currentUserUID]);
+
+  //pure function
   const toggleSelection = (item) => {
     if (selectedItems.includes(item)) {
       setSelectedItems(selectedItems.filter((i) => i !== item));
@@ -22,12 +37,41 @@ const Keranjang = ({ navigation }) => {
     }
 
     try {
-      await checkout(selectedItems);
-      Alert.alert('Checkout Berhasil');
-      setSelectedItems([]); // Reset item yang dipilih
+      const orderId = `ORDER-${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`;
+
+      const transactionData = {
+        userId: currentUserUID,
+        items: selectedItems,
+        totalAmount: selectedItems.reduce((total, item) => total + item.harga, 0),
+        orderId: orderId,
+        status: 'menunggu dikonfirmasi', 
+        createdAt: serverTimestamp(),
+      };
+
+      await addDoc(collection(db, 'transactions'), transactionData);
+
+      setSelectedItems([]);
+      Alert.alert('Checkout Berhasil', `Pesanan Anda telah berhasil dibuat.`);
+
+      selectedItems.forEach(item => hapusDariKeranjang(item));
+
     } catch (error) {
       Alert.alert('Gagal', 'Terjadi kesalahan saat proses checkout');
       console.error(error);
+    }
+  };
+
+  const handleDeleteItem = async (item) => {
+    try {
+      const itemRef = doc(db, 'keranjang', `${item.uid}_${item.barangId}`);
+      await deleteDoc(itemRef);
+
+      hapusDariKeranjang(item);
+
+      Alert.alert('Berhasil', 'Barang berhasil dihapus dari keranjang');
+    } catch (error) {
+      console.error('Error hapus barang:', error);
+      Alert.alert('Gagal', 'Terjadi kesalahan saat menghapus barang');
     }
   };
 
@@ -41,11 +85,11 @@ const Keranjang = ({ navigation }) => {
       </TouchableOpacity>
       <Text style={styles.header}>Keranjang Anda</Text>
 
-      {keranjang.length === 0 ? (
+      {filteredKeranjang.length === 0 ? (
         <Text style={styles.emptyText}>Keranjang masih kosong</Text>
       ) : (
         <FlatList
-          data={keranjang}
+          data={filteredKeranjang}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={styles.item}>
@@ -58,7 +102,7 @@ const Keranjang = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => hapusDariKeranjang(item)}
+                onPress={() => handleDeleteItem(item)}  
               >
                 <Text style={styles.deleteText}>Hapus</Text>
               </TouchableOpacity>

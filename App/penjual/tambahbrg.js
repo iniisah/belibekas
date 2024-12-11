@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const Tambahbrg = () => {
@@ -9,10 +9,11 @@ const Tambahbrg = () => {
   const [harga, setHarga] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [informasiLain, setInformasiLain] = useState('');
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   const db = getFirestore();
   const auth = getAuth();
-  const user = auth.currentUser;
+  const user = auth.currentUser; 
+
   const handleUpload = async () => {
     if (!nama || !harga || !deskripsi) {
       Alert.alert('Error', 'Semua field kecuali Informasi Lain wajib diisi!');
@@ -31,9 +32,16 @@ const Tambahbrg = () => {
         deskripsi,
         informasiLain,
         createdAt: new Date(),
-        uid: user.uid,
+        userId: user.uid,  
       });
-      Alert.alert('Sukses', "Barang berhasil ditambahkan!");
+
+      const barangId = docRef.id;
+
+      await updateDoc(docRef, {
+        barangId: barangId, 
+      });
+
+      Alert.alert('Sukses', `Barang berhasil ditambahkan dengan ID: ${barangId}`);
       navigation.goBack(); 
     } catch (error) {
       console.error('Error adding document: ', error);

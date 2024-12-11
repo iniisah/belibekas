@@ -5,13 +5,14 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebaseConfig';
 import AuthHeader from './AuthHeader';
 
+//pure function
 const validateLoginInput = (email, password) => {
   if (email.trim() === '' || password.trim() === '') {
     return 'Email dan password tidak boleh kosong.';
   }
   return '';
 };
-
+//pure function
 const handleFirebaseLogin = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);

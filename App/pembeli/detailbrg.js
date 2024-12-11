@@ -1,23 +1,59 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { KeranjangContext } from '../KeranjangContext';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, doc, setDoc, getDoc } from 'firebase/firestore';
 
 const DetailBarang = ({ route, navigation }) => {
   const { nama, harga, deskripsi } = route.params;
   const { keranjang, tambahkanKeKeranjang } = useContext(KeranjangContext);
-
+  
   const [isAdded, setIsAdded] = useState(false);
+
+  const auth = getAuth();
+  const db = getFirestore();
 
   useEffect(() => {
     const sudahAda = keranjang.some((item) => item.nama === nama);
     setIsAdded(sudahAda);
-  }, [keranjang]);
+  }, [keranjang, nama]);
 
   const handleAddToCart = async () => {
-    const berhasilDitambahkan = await tambahkanKeKeranjang({ nama, harga, deskripsi });
-    if (berhasilDitambahkan) {
+    if (!auth.currentUser) {
+      Alert.alert('Error', 'Pengguna tidak terautentikasi');
+      return;
+    }
+
+    const uidPengguna = auth.currentUser.uid;  
+
+    const cartItem = {
+      nama,
+      harga,
+      deskripsi,
+      uid: uidPengguna, 
+      timestamp: new Date(),
+    };
+
+    try {
+      const cartRef = doc(db, 'keranjang', `${uidPengguna}_${nama}`); 
+
+      const cartSnapshot = await getDoc(cartRef); 
+
+      if (cartSnapshot.exists()) {
+        Alert.alert('Peringatan', 'Barang sudah ada di keranjang');
+        return;
+      }
+
+      await setDoc(cartRef, cartItem);
+
+      await tambahkanKeKeranjang(cartItem);
       setIsAdded(true);
       navigation.navigate('keranjang');
+
+      Alert.alert('Sukses', 'Barang berhasil ditambahkan ke keranjang');
+    } catch (error) {
+      console.error('Error menambahkan ke Firestore:', error);
+      Alert.alert('Gagal', 'Terjadi kesalahan saat menambahkan barang ke keranjang');
     }
   };
 
@@ -33,7 +69,7 @@ const DetailBarang = ({ route, navigation }) => {
       <TouchableOpacity
         style={[styles.button, isAdded && styles.buttonDisabled]}
         onPress={handleAddToCart}
-        disabled={isAdded} 
+        disabled={isAdded}
       >
         <Text style={styles.buttonText}>{isAdded ? 'Sudah di Keranjang' : 'Masukkan ke Keranjang'}</Text>
       </TouchableOpacity>
@@ -59,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 7,
   },
   header: {
-    marginTop:40,
+    marginTop: 40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',

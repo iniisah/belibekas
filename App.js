@@ -11,6 +11,7 @@ import ProfilPembeliScreen from './App/pembeli/profilpbeli';
 import keranjang from './App/pembeli/keranjang';
 import riwayat from './App/pembeli/riwayat';
 import detailbrg from './App/pembeli/detailbrg';
+import beriulasan from './App/pembeli/beriulasan';
 import transaksi from './App/penjual/transaksi';
 import profilpenjual from './App/penjual/profilpjual';
 import editprofilpbli from './App/pembeli/editprofil';
@@ -41,6 +42,7 @@ export default function App() {
           <Stack.Screen name="edit profil penjual" component={editprofilpjual} options={{ headerShown: false }} />
           <Stack.Screen name="ulasan" component={ulasan} options={{ headerShown: false }} />
           <Stack.Screen name="tambah barang" component={tambahbrg} options={{ headerShown: false }} />
+          <Stack.Screen name="beri ulasan" component={beriulasan} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </KeranjangProvider>

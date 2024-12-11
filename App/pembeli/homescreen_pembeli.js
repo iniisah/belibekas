@@ -3,19 +3,24 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'r
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-// Higher-Order Function 
-const filterByPrice = (minHarga, maxHarga) => (item) => {
-  return item.harga >= minHarga && item.harga <= maxHarga;
-};
+// Higher-Order Function filter harga
+const filterByPrice = (minHarga, maxHarga) => (item) =>
+  item.harga >= minHarga && item.harga <= maxHarga;
 
+// Higher-Order Function filter nama
+const filterByName = (query) => (item) =>
+  item.nama.toLowerCase().includes(query.toLowerCase());
+
+//immutability
 export default function App({ navigation }) {
   const [barang, setBarang] = useState([]); 
   const [filteredBarang, setFilteredBarang] = useState([]); 
   const [maxHarga, setMaxHarga] = useState(1000000);
   const [minHarga, setMinHarga] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterVisible, setFilterVisible] = useState(false); 
   const db = getFirestore(); 
-  const auth = getAuth();
+  const auth = getAuth(); 
 
   useEffect(() => {
     const fetchBarang = async () => {
@@ -24,26 +29,41 @@ export default function App({ navigation }) {
         const items = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.uid !== auth.currentUser?.uid) {
+          if (data.userId !== auth.currentUser?.uid) {
             items.push({ id: doc.id, ...data });
           }
         });
         setBarang(items);
-        setFilteredBarang(items);
+        setFilteredBarang(items); 
       } catch (error) {
         console.error('Error fetching barang:', error);
       }
     };
 
     fetchBarang();
-  }, []);
-  
+  }, [auth]);
+
+  const applyFilters = () => {
+    const filters = [filterByPrice(minHarga, maxHarga), filterByName(searchQuery)];
+    const filtered = filters.reduce((acc, filter) => acc.filter(filter), barang);
+    setFilteredBarang(filtered);
+  };
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    applyFilters();
+  };
 
   const handleFilter = () => {
-    const filterFunction = filterByPrice(minHarga, maxHarga);
-    const filtered = barang.filter(filterFunction);
-    setFilteredBarang(filtered);
-    setFilterVisible(false); 
+    applyFilters();
+    setFilterVisible(false);
+  };
+
+  const resetFilters = () => {
+    setMinHarga(0);
+    setMaxHarga(1000000);
+    setSearchQuery('');
+    setFilteredBarang(barang); 
   };
 
   return (
@@ -52,17 +72,17 @@ export default function App({ navigation }) {
         <TextInput
           style={styles.searchBar}
           placeholder="Cari..."
+          value={searchQuery}
+          onChangeText={handleSearchChange}
           keyboardType="default"
         />
         <TouchableOpacity
-        style={styles.filterButton}
-        onPress={() => setFilterVisible(!filterVisible)}
+          style={styles.filterButton}
+          onPress={() => setFilterVisible(!filterVisible)}
         >
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
       </View>
-
-      
 
       {filterVisible && (
         <View style={styles.filterContainer}>
@@ -82,6 +102,9 @@ export default function App({ navigation }) {
           />
           <TouchableOpacity style={styles.applyButton} onPress={handleFilter}>
             <Text style={styles.applyButtonText}>Terapkan</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.applyButton} onPress={resetFilters}>
+            <Text style={styles.applyButtonText}>Hapus Filter</Text>
           </TouchableOpacity>
         </View>
       )}
