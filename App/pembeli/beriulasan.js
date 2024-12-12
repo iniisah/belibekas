@@ -29,7 +29,10 @@ const BeriUlasan = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Beri Ulasan</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>〱</Text>
+      </TouchableOpacity>
+      <Text style={styles.header}>Beri Ulasan</Text>
       <TextInput
         style={styles.textInput}
         placeholder="Tulis ulasan Anda di sini"
@@ -50,10 +53,25 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 20,
+  header: {
+    marginTop:40,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
   },
   textInput: {
     borderWidth: 1,

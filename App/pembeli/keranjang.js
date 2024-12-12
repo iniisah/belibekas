@@ -77,10 +77,7 @@ const Keranjang = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack('homeScreen penjual')}
-      >
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Keranjang Anda</Text>
@@ -126,11 +123,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginTop: 20,
+    marginTop:40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginVertical: 20,
   },
   emptyText: {
     marginTop: 20,
@@ -155,6 +152,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     borderRadius: 8,
   },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
+  },
   itemContainer: {
     flex: 3,
     paddingLeft: 10,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   checkoutButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
