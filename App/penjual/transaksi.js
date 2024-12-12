@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
 //
 const Transaksi = () => {
   const [transactions, setTransactions] = useState([]);
   const db = getFirestore();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -48,9 +50,13 @@ const Transaksi = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>〱</Text>
+      </TouchableOpacity>
       <Text style={styles.header}>Daftar Transaksi</Text>
 
       {transactions.length === 0 ? (
+        
         <Text style={styles.emptyText}>Tidak ada transaksi.</Text>
       ) : (
         <FlatList
@@ -84,11 +90,25 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
   },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 7,
+  },
   header: {
+    marginTop:40,
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
   },
   emptyText: {
     fontSize: 16,
@@ -109,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   confirmButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'limegreen',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,

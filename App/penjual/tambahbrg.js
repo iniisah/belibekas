@@ -51,7 +51,7 @@ const Tambahbrg = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Tambah Barang</Text>

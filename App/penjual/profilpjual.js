@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-
+//test
 const ProfilpenjualScreen = () => {
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -106,7 +106,7 @@ const ProfilpenjualScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack('homeScreen penjual')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>〱</Text>
       </TouchableOpacity>
       <Text style={styles.header}>Profil Pengguna</Text>
