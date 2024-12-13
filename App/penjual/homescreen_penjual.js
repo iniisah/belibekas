@@ -1,53 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, FlatList } from 'react-native';
-import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, getDocs} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const filterByPrice = (minHarga, maxHarga) => (item) => {
   return item.harga >= minHarga && item.harga <= maxHarga;
 };
+const filterByName = (query) => (item) =>
+  item.nama.toLowerCase().includes(query.toLowerCase());
 
 export default function App({ navigation }) {
   const [barang, setBarang] = useState([]);
   const [filteredBarang, setFilteredBarang] = useState([]);
   const [maxHarga, setMaxHarga] = useState(1000000);
   const [minHarga, setMinHarga] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterVisible, setFilterVisible] = useState(false);
   const db = getFirestore();
   const auth = getAuth();
-  const user = auth.currentUser;
 
   useEffect(() => {
-    if (!user) {
-      console.error('User tidak terautentikasi.');
-      return;
-    }
-  
-    const unsubscribe = onSnapshot(
-      query(collection(db, 'barang'), where('userId', '==', user.uid)),
-      (querySnapshot) => {
+    const fetchBarang = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'barang'));
         const items = [];
         querySnapshot.forEach((doc) => {
-          items.push({ id: doc.id, ...doc.data() });
+          const data = doc.data();
+          if (data.userId == auth.currentUser?.uid) {
+            items.push({ id: doc.id, ...data });
+          }
         });
         setBarang(items);
-        setFilteredBarang(items);
-      },
-      (error) => {
+        setFilteredBarang(items); 
+      } catch (error) {
         console.error('Error fetching barang:', error);
       }
-    );
+    };
+
+    fetchBarang();
+  }, [auth]);
   
-    return () => unsubscribe();
-  }, [user]);
-  
+  const applyFilters = () => {
+    const filters = [filterByPrice(minHarga, maxHarga), filterByName(searchQuery)];
+    const filtered = filters.reduce((acc, filter) => acc.filter(filter), barang);
+    setFilteredBarang(filtered);
+  };
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    applyFilters();
+  };
 
   const handleFilter = () => {
-    const filterFunction = filterByPrice(minHarga, maxHarga);
-    const filtered = barang.filter(filterFunction);
-    setFilteredBarang(filtered);
+    applyFilters();
     setFilterVisible(false);
   };
+
+  const resetFilters = () => {
+    setMinHarga(0);
+    setMaxHarga(1000000);
+    setSearchQuery('');
+    setFilteredBarang(barang); 
+  };
+
 
   return (
     <View style={styles.container}>
@@ -55,6 +70,8 @@ export default function App({ navigation }) {
         <TextInput
           style={styles.searchBar}
           placeholder="Cari..."
+          value={searchQuery}
+          onChangeText={handleSearchChange}
           keyboardType="default"
         />
         <TouchableOpacity
@@ -83,6 +100,9 @@ export default function App({ navigation }) {
           />
           <TouchableOpacity style={styles.applyButton} onPress={handleFilter}>
             <Text style={styles.applyButtonText}>Terapkan</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.applyButton} onPress={resetFilters}>
+            <Text style={styles.applyButtonText}>Hapus Filter</Text>
           </TouchableOpacity>
         </View>
       )}
