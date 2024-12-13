@@ -41,7 +41,7 @@ const Tambahbrg = () => {
         barangId: barangId, 
       });
 
-      Alert.alert('Sukses', `Barang berhasil ditambahkan dengan ID: ${barangId}`);
+      Alert.alert('Sukses', "Barang berhasil ditambahkan");
       navigation.goBack(); 
     } catch (error) {
       console.error('Error adding document: ', error);

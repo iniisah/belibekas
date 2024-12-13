@@ -18,6 +18,7 @@ import editprofilpbli from './App/pembeli/editprofil';
 import editprofilpjual from './App/penjual/editprofil2';
 import ulasan from './App/penjual/ulasan';
 import tambahbrg from './App/penjual/tambahbrg';
+import detailbrgpjual from './App/penjual/detailbrgpjual';
 import AuthHeader from './App/AuthHeader';
 
 const Stack = createNativeStackNavigator();
@@ -43,6 +44,7 @@ export default function App() {
           <Stack.Screen name="ulasan" component={ulasan} options={{ headerShown: false }} />
           <Stack.Screen name="tambah barang" component={tambahbrg} options={{ headerShown: false }} />
           <Stack.Screen name="beri ulasan" component={beriulasan} options={{ headerShown: false }} />
+          <Stack.Screen name="detail barang pjual" component={detailbrgpjual} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </KeranjangProvider>

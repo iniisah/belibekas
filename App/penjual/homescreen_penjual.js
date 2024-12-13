@@ -94,7 +94,7 @@ export default function App({ navigation }) {
           <TouchableOpacity
             style={styles.itemContainer}
             onPress={() =>
-              navigation.navigate('detailbrg', {
+              navigation.navigate('detail barang pjual', {
                 nama: item.nama,
                 harga: item.harga,
                 deskripsi: item.deskripsi,

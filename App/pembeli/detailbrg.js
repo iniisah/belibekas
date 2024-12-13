@@ -7,7 +7,7 @@ import { getFirestore, collection, doc, setDoc, getDoc } from 'firebase/firestor
 const DetailBarang = ({ route, navigation }) => {
   const { nama, harga, deskripsi } = route.params;
   const { keranjang, tambahkanKeKeranjang } = useContext(KeranjangContext);
-  
+
   const [isAdded, setIsAdded] = useState(false);
 
   const auth = getAuth();
@@ -73,6 +73,11 @@ const DetailBarang = ({ route, navigation }) => {
       >
         <Text style={styles.buttonText}>{isAdded ? 'Sudah di Keranjang' : 'Masukkan ke Keranjang'}</Text>
       </TouchableOpacity>
+
+      {/* Tambahkan tombol Pergi ke WhatsApp di bawah halaman */}
+      <TouchableOpacity style={styles.whatsappButton}>
+        <Text style={styles.whatsappButtonText}>Pergi ke WhatsApp</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -120,6 +125,17 @@ const styles = StyleSheet.create({
   },
   buttonText: { 
     color: '#fff',
+  },
+  whatsappButton: {
+    backgroundColor: '#25D366',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 550,
+  },
+  whatsappButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
